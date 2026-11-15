@@ -1,0 +1,16 @@
+.env
+.env.*
+*.key
+*.pem
+key.json
+*credentials*.json
+service-account*.json
+.git/
+tests/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.idea/
+.vscode/
+.DS_Store
