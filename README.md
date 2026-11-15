@@ -11,6 +11,52 @@ ShipCost MCP exposes simple logistics tools over MCP. It estimates freight charg
 
 **Rates and distances are fictional, illustrative planning data, not live quotes or authoritative road measurements.** Replace them with verified Sri Lankan carrier APIs and operational routing data before using estimates in production decisions.
 
+## How to use it with AI
+
+ShipCost MCP is a **tool server, not an AI model**. It does not contain or connect to a model and does not need an AI API key. Instead, an MCP-compatible AI app (the *host*), such as Copilot Chat in VS Code, connects to this server. The host's AI interprets your request, calls the appropriate ShipCost tool, and uses the returned result to answer. Without an MCP host and an available AI assistant, the server will not chat by itself.
+
+### Connect from VS Code and Copilot Chat
+
+1. Open this project folder in VS Code and install its dependencies:
+
+   ```powershell
+   py -3 -m venv .venv
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   ```
+
+   On macOS/Linux, use `python3 -m venv .venv` and `.venv/bin/python -m pip install -r requirements.txt`.
+
+2. Create `.vscode/mcp.json` in the workspace. On Windows, use:
+
+   ```json
+   {
+     "servers": {
+       "shipcost-mcp": {
+         "type": "stdio",
+         "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+         "args": [
+           "${workspaceFolder}\\server.py",
+           "--transport",
+           "stdio"
+         ]
+       }
+     }
+   }
+   ```
+
+   On macOS/Linux, replace `command` with `"${workspaceFolder}/.venv/bin/python"` and the first argument with `"${workspaceFolder}/server.py"`.
+
+3. In VS Code, run **MCP: List Servers** from the Command Palette (`Ctrl+Shift+P`), select `shipcost-mcp`, and start it. Approve the workspace/server trust prompt if VS Code shows one.
+4. Open Copilot Chat in Agent mode and ask a logistics question, for example:
+
+   > Estimate FTL freight from Colombo to Kandy for 500 kg over 115 km.
+
+VS Code launches the configured process over stdio. Keep the workspace open; you do not need to start `python server.py` separately in a terminal. The running process appears in VS Code's MCP server controls/output. If you edit the server code or configuration, restart the MCP server from there.
+
+### Other MCP hosts
+
+Configure the host to launch `server.py --transport stdio`, using the Python executable from this project's virtual environment. For an MCP host that connects over HTTP instead, run `python server.py` and configure the host with `http://localhost:8080/mcp`. These transports connect the *host* to the tools; neither makes ShipCost MCP an AI model.
+
 ## Tools exposed
 
 | Name | Description | Example input | Example output |
