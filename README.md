@@ -152,7 +152,7 @@ Representative JSON-RPC response (the values are computed from the illustrative 
 
 - If a secret is ever committed, rotate it immediately with the provider, then clean repository history with `git filter-repo` or BFG. Removing a secret from the latest commit alone is not sufficient.
 - Enable GitHub Secret Scanning (available for public repositories) and push protection where available.
-- For vulnerability reports, see [SECURITY.md](SECURITY.md). Do not report security issues in public issues.
+- Do not report security issues in public issues.
 
 ## Submit to Chainkit
 
