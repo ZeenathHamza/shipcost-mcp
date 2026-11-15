@@ -100,7 +100,7 @@ def estimate_freight(
     """Estimate illustrative freight cost, transit time, and carrier for a shipment.
 
     Provide positive weight and distance values and one of FTL, LTL, AIR, or SEA.
-    All prices are fictional planning estimates in Indian rupees (INR).
+    All prices are fictional planning estimates in Sri Lankan rupees (LKR).
     """
     _validate_shipment(origin, destination, weight_kg, distance_km)
     if not isinstance(mode, str) or mode not in RATE_TABLE:
@@ -111,13 +111,13 @@ def estimate_freight(
         "origin": origin.strip(),
         "destination": destination.strip(),
         "mode": mode,
-        "estimated_cost_inr": cost,
+        "estimated_cost_lkr": cost,
         "estimated_transit_days": transit_days,
         "carrier_suggestion": CARRIER_BY_MODE[mode],
     }
     LOGGER.info(
         "freight estimate completed",
-        extra={"mode": mode, "estimated_cost_inr": cost},
+        extra={"mode": mode, "estimated_cost_lkr": cost},
     )
     return result
 
@@ -126,7 +126,7 @@ def estimate_freight(
 def compare_carriers(
     origin: str, destination: str, weight_kg: float, distance_km: float
 ) -> list[dict[str, str | float | int]]:
-    """Compare four illustrative carrier options, ranked by estimated INR cost."""
+    """Compare four illustrative carrier options, ranked by estimated LKR cost."""
     _validate_shipment(origin, destination, weight_kg, distance_km)
 
     options: list[dict[str, str | float | int]] = []
@@ -136,11 +136,11 @@ def compare_carriers(
             {
                 "name": carrier,
                 "mode": mode,
-                "cost_inr": cost,
+                "cost_lkr": cost,
                 "transit_days": transit_days,
             }
         )
-    ranked_options = sorted(options, key=lambda option: float(option["cost_inr"]))
+    ranked_options = sorted(options, key=lambda option: float(option["cost_lkr"]))
     LOGGER.info("carrier comparison completed", extra={"option_count": len(ranked_options)})
     return ranked_options
 
@@ -149,7 +149,7 @@ def compare_carriers(
 def calculate_route(pickup_points: list[str], depot: str) -> dict[str, Any]:
     """Order pickup cities from a depot using a nearest-neighbor distance heuristic.
 
-    City names must match the supported Indian cities in the distance map. The
+    City names must match the supported Sri Lankan cities in the distance map. The
     route starts at the depot and visits each pickup once; it does not return to
     the depot. Travel time uses an illustrative average road speed of 40 km/h.
     """

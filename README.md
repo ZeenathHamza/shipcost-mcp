@@ -1,6 +1,6 @@
 # ShipCost MCP
 
-An open-source Model Context Protocol (MCP) server that gives AI agents illustrative freight estimates, carrier comparisons, and multi-stop route planning for India.
+An open-source Model Context Protocol (MCP) server that gives AI agents illustrative freight estimates in Sri Lankan rupees (LKR), carrier comparisons, and multi-stop route planning across Sri Lanka.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
@@ -9,17 +9,17 @@ An open-source Model Context Protocol (MCP) server that gives AI agents illustra
 
 ShipCost MCP exposes simple logistics tools over MCP. It estimates freight charges and transit time across road, air, and sea modes, compares carrier options, and arranges pickup cities with a nearest-neighbor route heuristic. It is designed as a small, self-contained starting point for connecting AI agents to supply-chain workflows.
 
-**Rates and distances are fictional, illustrative planning data, not live quotes.** Replace them with verified carrier APIs and operational routing data before using estimates in production decisions.
+**Rates and distances are fictional, illustrative planning data, not live quotes or authoritative road measurements.** Replace them with verified Sri Lankan carrier APIs and operational routing data before using estimates in production decisions.
 
 ## Tools exposed
 
 | Name | Description | Example input | Example output |
 |---|---|---|---|
-| `estimate_freight` | Estimates cost, transit time, and a suggested carrier. Modes: `FTL`, `LTL`, `AIR`, `SEA`. | `{"origin":"Mumbai","destination":"Delhi","weight_kg":500,"distance_km":1420,"mode":"FTL"}` | `{"origin":"Mumbai","destination":"Delhi","mode":"FTL","estimated_cost_inr":48340.0,"estimated_transit_days":2,"carrier_suggestion":"Deccan Road Freight"}` |
-| `compare_carriers` | Ranks four illustrative mode/carrier options by estimated cost. | `{"origin":"Chennai","destination":"Bangalore","weight_kg":250,"distance_km":350}` | `[{"name":"ParcelBridge Logistics","mode":"LTL","cost_inr":3925.0,"transit_days":1},{"name":"Deccan Road Freight","mode":"FTL","cost_inr":13900.0,"transit_days":1},{"name":"CoastalLink Freight","mode":"SEA","cost_inr":14050.0,"transit_days":1},{"name":"Akash Cargo","mode":"AIR","cost_inr":27750.0,"transit_days":1}]` |
-| `calculate_route` | Orders supported pickup cities from a depot using a nearest-neighbor heuristic; the route does not return to the depot. | `{"depot":"Mumbai","pickup_points":["Pune","Ahmedabad","Jaipur"]}` | `{"optimized_order":["Pune","Ahmedabad","Jaipur"],"total_distance_km":1470,"estimated_time_hours":36.75}` |
+| `estimate_freight` | Estimates cost in LKR, transit time, and a suggested carrier. Modes: `FTL`, `LTL`, `AIR`, `SEA`. | `{"origin":"Colombo","destination":"Kandy","weight_kg":500,"distance_km":115,"mode":"FTL"}` | `{"origin":"Colombo","destination":"Kandy","mode":"FTL","estimated_cost_lkr":21000.0,"estimated_transit_days":1,"carrier_suggestion":"Lanka Road Freight"}` |
+| `compare_carriers` | Ranks four illustrative mode/carrier options by estimated LKR cost. | `{"origin":"Colombo","destination":"Kandy","weight_kg":100,"distance_km":115}` | `[{"name":"Island Parcel Logistics","mode":"LTL","cost_lkr":6150.0,"transit_days":1},{"name":"Lanka Road Freight","mode":"FTL","cost_lkr":19800.0,"transit_days":1},{"name":"Colombo Coastal Freight","mode":"SEA","cost_lkr":29675.0,"transit_days":1},{"name":"Ceylon Air Cargo","mode":"AIR","cost_lkr":40700.0,"transit_days":1}]` |
+| `calculate_route` | Orders supported pickup cities from a depot using a nearest-neighbor heuristic; the route does not return to the depot. | `{"depot":"Colombo","pickup_points":["Kandy","Galle","Matara"]}` | `{"optimized_order":["Kandy","Galle","Matara"],"total_distance_km":380,"estimated_time_hours":9.5}` |
 
-`estimate_freight` and `compare_carriers` require positive, finite weight and distance values. The route tool accepts these cities: Chennai, Mumbai, Delhi, Bangalore, Hyderabad, Kolkata, Pune, Ahmedabad, Jaipur, and Kochi.
+`estimate_freight` and `compare_carriers` require positive, finite weight and distance values. The route tool accepts these Sri Lankan cities: Colombo, Kandy, Galle, Jaffna, Trincomalee, Batticaloa, Anuradhapura, Negombo, Matara, and Kurunegala.
 
 ## Quick start
 
@@ -66,10 +66,10 @@ An MCP client first initializes its connection and negotiates the protocol versi
   "params": {
     "name": "estimate_freight",
     "arguments": {
-      "origin": "Mumbai",
-      "destination": "Delhi",
+      "origin": "Colombo",
+      "destination": "Kandy",
       "weight_kg": 500,
-      "distance_km": 1420,
+      "distance_km": 115,
       "mode": "FTL"
     }
   }
@@ -86,7 +86,7 @@ Representative JSON-RPC response (the values are computed from the illustrative 
     "content": [
       {
         "type": "text",
-        "text": "{\"origin\":\"Mumbai\",\"destination\":\"Delhi\",\"mode\":\"FTL\",\"estimated_cost_inr\":48340.0,\"estimated_transit_days\":2,\"carrier_suggestion\":\"Deccan Road Freight\"}"
+        "text": "{\"origin\":\"Colombo\",\"destination\":\"Kandy\",\"mode\":\"FTL\",\"estimated_cost_lkr\":21000.0,\"estimated_transit_days\":1,\"carrier_suggestion\":\"Lanka Road Freight\"}"
       }
     ],
     "isError": false
@@ -96,7 +96,7 @@ Representative JSON-RPC response (the values are computed from the illustrative 
 
 ## Security & secrets
 
-- The core tools require no secrets.
+- The core tools require no secrets. Freight estimates use fictional LKR pricing and are configured with Sri Lankan examples.
 - Never commit `.env`; commit `.env.example` instead. Keep API keys and credentials in environment variables or a managed secret store, never in source code or container images.
 - If extending the project with real carrier APIs, store credentials in Google Secret Manager and attach them to Cloud Run at deployment, for example:
 
